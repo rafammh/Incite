@@ -20,7 +20,11 @@ import api from '../../../services/api';
 import Button from '@material-ui/core/Button';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 
-import Chip from '@material-ui/core/Chip';
+// import Chip from '@material-ui/core/Chip';
+// import AddIcon from '@material-ui/icons/Add';
+import LinearProgress from '@material-ui/core/LinearProgress';
+import AutorenewIcon from '@material-ui/icons/Autorenew';
+import ClearIcon from '@material-ui/icons/Clear';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -51,7 +55,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function ClientesListagem() {
   const classes = useStyles();
-
+  const [ loading, setLoading ] = useState(true);
   const [clientes, setClientes] = useState([]);
 
   useEffect(() =>{
@@ -60,6 +64,7 @@ export default function ClientesListagem() {
       const response = await api.get("/api/clientes");
       console.log(response);
       setClientes(response.data)
+      setLoading(false);
     }
     loadClientes();
   },[]);
@@ -90,6 +95,8 @@ export default function ClientesListagem() {
                 <Grid container spacing={3}>
                   <Grid item xs={12} sm={12}>
                   <TableContainer component={Paper}>
+                  {loading?(<LinearProgress style={{width:'50%', margin:'20px auto'}}  />):(
+                 
                     <Table className={classes.table} aria-label="simple table">
                       <TableHead>
                         <TableRow>
@@ -111,14 +118,14 @@ export default function ClientesListagem() {
                             <TableCell align="center">{new Date(row.lastSeen).toLocaleString('pt-br')}</TableCell>
                             <TableCell align="right">
                             <ButtonGroup aria-label="outlined primary button group">
-                              <Button color="primary" href={'/admin/clientes/editar/'+row._id}>Atualizar</Button>
-                              <Button color="secondary" onClick={() => handleDelete(row._id)}>Excluir</Button>
+                              <Button variant="contained" color="primary" href={'/admin/clientes/editar/'+row._id}><AutorenewIcon /> Atualizar</Button>
+                              <Button variant="contained" color="secondary" onClick={() => handleDelete(row._id)}><ClearIcon /></Button>
                             </ButtonGroup>
                             </TableCell>
                           </TableRow>
                         ))}
                       </TableBody>
-                    </Table>
+                    </Table>)}
                   </TableContainer>
                   </Grid>
                 </Grid>

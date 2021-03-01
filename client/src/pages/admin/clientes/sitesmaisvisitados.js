@@ -17,11 +17,13 @@ import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import api from '../../../services/api';
+import Chart from './graficos/grafico-visitados';
 
 import Button from '@material-ui/core/Button';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 
 import Chip from '@material-ui/core/Chip';
+import LinearProgress from '@material-ui/core/LinearProgress';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -61,13 +63,15 @@ export default function ClientesListagem() {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
+  const [ loading, setLoading ] = useState(true);
   const [clientes, setClientes] = useState([]);
 
   useEffect(() =>{
     
     async function loadClientes(){
       const response = await api.get("/api/clientes");
-      setClientes(response.data)
+      setClientes(response.data);
+      setLoading(false);
     }
     loadClientes();
   },[]);
@@ -111,10 +115,13 @@ export default function ClientesListagem() {
             <Paper className={classes.paper}>
                 <h2>Sites Mais Visitados</h2>
                 <MenuCliente/>
+                {/* GRÁFICO */}
+                <Chart/>
                 <Grid container spacing={3}>
                   <Grid item xs={12} sm={12}>
                   <TableContainer component={Paper}>
                   <TableContainer className={classes.container}>
+                  {loading?(<LinearProgress style={{width:'50%', margin:'20px auto'}}  />):(
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
@@ -145,7 +152,7 @@ export default function ClientesListagem() {
               );
             })}
           </TableBody>
-        </Table>
+        </Table>)}
       </TableContainer>
       <TablePagination
         rowsPerPageOptions={[10, 25, 100]}

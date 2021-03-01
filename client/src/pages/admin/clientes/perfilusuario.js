@@ -20,7 +20,7 @@ import api from '../../../services/api';
 import Chart from './graficos/grafico-perfil';
 import Button from '@material-ui/core/Button';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
-
+import LinearProgress from '@material-ui/core/LinearProgress';
 import Chip from '@material-ui/core/Chip';
 
 const useStyles = makeStyles((theme) => ({
@@ -61,13 +61,15 @@ export default function ClientesListagem() {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
+  const [ loading, setLoading ] = useState(true);
   const [clientes, setClientes] = useState([]);
 
   useEffect(() =>{
     
     async function loadClientes(){
       const response = await api.get("/api/clientes");
-      setClientes(response.data)
+      setClientes(response.data);
+      setLoading(false);
     }
     loadClientes();
   },[]);
@@ -117,12 +119,13 @@ export default function ClientesListagem() {
                   <Grid item xs={12} sm={12}>
                   <TableContainer component={Paper}>
                   <TableContainer className={classes.container}>
-        <Table stickyHeader aria-label="sticky table">
+                  {loading?(<LinearProgress style={{width:'50%', margin:'20px auto'}}  />):(
+                    <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
               {columns.map((column) => (
                 <TableCell
-                  key={column.id}
+                key={column.id}
                   align={column.align}
                   style={{ minWidth: column.minWidth }}
                   >
@@ -140,7 +143,7 @@ export default function ClientesListagem() {
                     return (
                       <TableCell key={column.id} align={column.align}>
                         {column.format && typeof value === 'number' ? column.format(value) : value}
-                        {console.log(value)}
+                        {/* {console.log(value)} */}
                       </TableCell>
                     );
                   })}
@@ -149,9 +152,10 @@ export default function ClientesListagem() {
             })}
           </TableBody>
         </Table>
+      )}
       </TableContainer>
       <TablePagination
-        rowsPerPageOptions={[10, 25, 100]}
+      rowsPerPageOptions={[10, 25, 100]}
         component="div"
         count={clientes.length}
         rowsPerPage={rowsPerPage}

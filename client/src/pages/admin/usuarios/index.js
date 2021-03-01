@@ -21,6 +21,10 @@ import Button from '@material-ui/core/Button';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 
 import Chip from '@material-ui/core/Chip';
+import LinearProgress from '@material-ui/core/LinearProgress';
+import AddIcon from '@material-ui/icons/Add';
+import AutorenewIcon from '@material-ui/icons/Autorenew';
+import ClearIcon from '@material-ui/icons/Clear';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -51,7 +55,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function UsuariosListagem() {
   const classes = useStyles();
-
+  const [ loading, setLoading ] = useState(true);
   const [usuarios, setUsuarios] = useState([]);
 
   useEffect(() =>{
@@ -59,6 +63,7 @@ export default function UsuariosListagem() {
     async function loadUsuarios(){
       const response = await api.get("/api/usuarios");
       setUsuarios(response.data)
+      setLoading(false);
     }
     loadUsuarios();
   },[]);
@@ -87,12 +92,15 @@ export default function UsuariosListagem() {
                 <h2>Listagem de Usuários</h2>
                 <Grid container spacing={3}>
                 <ButtonGroup aria-label="outlined primary button group">
-                <Button color="primary" href={'/admin/usuarios/cadastrar'}>Cadastrar Usuários</Button>
-                </ButtonGroup>
+                <Button style={{marginBottom:10}} variant="contained" color="primary" href={'/admin/usuarios/cadastrar'}>
+              <AddIcon />
+              Cadastrar
+            </Button></ButtonGroup>
                 </Grid>
                 <Grid container spacing={3}>
                   <Grid item xs={12} sm={12}>
                   <TableContainer component={Paper}>
+                  {loading?(<LinearProgress style={{width:'50%', margin:'20px auto'}}  />):(
                     <Table className={classes.table} aria-label="simple table">
                       <TableHead>
                         <TableRow>
@@ -114,14 +122,14 @@ export default function UsuariosListagem() {
                             <TableCell align="center">{new Date(row.createdAt).toLocaleString('pt-br')}</TableCell>
                             <TableCell align="right">
                             <ButtonGroup aria-label="outlined primary button group">
-                              <Button color="primary" href={'/admin/usuarios/editar/'+row._id}>Atualizar</Button>
-                              <Button color="secondary" onClick={() => handleDelete(row._id)}>Excluir</Button>
+                            <Button variant="contained" color="primary" href={'/admin/usuarios/editar/'+row._id}><AutorenewIcon /> Atualizar</Button>
+                              <Button variant="contained" color="secondary" onClick={() => handleDelete(row._id)}><ClearIcon /></Button>
                             </ButtonGroup>
                             </TableCell>
                           </TableRow>
                         ))}
                       </TableBody>
-                    </Table>
+                    </Table>)}
                   </TableContainer>
                   </Grid>
                 </Grid>

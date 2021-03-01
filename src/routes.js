@@ -27,7 +27,10 @@ routes.put('/api/produtos',Produto.update);
 // Rotas de clientes
 routes.post('/api/clientes',Cliente.create);
 routes.get('/api/clientes',Cliente.index);
+routes.get('/api/clientes.diferencadata',Cliente.diferencadata);
+routes.get('/api/clientes.coordenada',Cliente.coordenada);
 routes.get('/api/clientes.grupoOS/:_id',Cliente.grupoOS);
+routes.get('/api/clientes.grupoIP/:_id',Cliente.grupoIP);
 routes.get('/api/clientes.details/:_id',Cliente.details);
 routes.delete('/api/clientes/:_id',Cliente.delete);
 routes.put('/api/clientes',Cliente.update);

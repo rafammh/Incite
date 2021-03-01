@@ -1,5 +1,5 @@
 import React  from 'react';
-import ReactDOM from 'react-dom';
+// import ReactDOM from 'react-dom';
 import Chart  from 'react-apexcharts';
 import api from '../../../../services/api';
 export default class ApexChart extends React.Component {
@@ -8,20 +8,20 @@ export default class ApexChart extends React.Component {
     super(props);
     this.state = {
       series:{},
-      options:{}  
+      options:{}
     } 
   }
   async componentDidMount() {
-   await api.get('/api/clientes.grupoOS/ios')
+   await api.get('/api/clientes.grupoIP/10.251.50.116')
     .then(res => {
         const perfil = res.data;
-        let sistemaop = [];
-        let totdisp = [];
+        let ip = [];
+        let totvisitas = [];
         perfil.forEach(element => {
-          sistemaop.push(element._id.os);
-          totdisp.push(element.total);
-          // console.log(sistemaop);
-            //  console.log(totdisp);   
+          ip.push(element._id.ip);
+          totvisitas.push(element.total);
+          // console.log(ip);
+            //  console.log(totvisitas);   
         });
         this.setState({ 
           options: {
@@ -29,13 +29,13 @@ export default class ApexChart extends React.Component {
               id: "basic-bar"
             },
             xaxis: {
-              categories:sistemaop,  
-            } 
+              categories:ip,  
+            }
           },
           series: [
             {       
-              name: "Total Dispositivos",
-              data: totdisp,
+              name: "Total de visitas",
+              data: totvisitas,
             }
           ]
           
@@ -43,7 +43,7 @@ export default class ApexChart extends React.Component {
         });
       }
       render() {
-        console.log('State1: ', this.state.series.name);
+        // console.log('State1: ', this.state.series.name);
       return (
          <div className="app">
         <React.Fragment> 

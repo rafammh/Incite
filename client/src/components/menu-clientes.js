@@ -8,10 +8,10 @@ export default function MenuCliente() {
     return (<React.Fragment>
                 <Grid style={{marginBottom:"10px"}} >
                 <ButtonGroup aria-label="outlined primary button group">
-                <Button color="secondary" href={'/admin/clientes/tempovisita'}>Tempo de Conexão</Button>
-                <Button color="primary" href={'/admin/clientes/sitesmaisvisitados'}>Sites Acessados</Button>
-                <Button color="secondary" href={'/admin/clientes/perfilusuario'}>Perfil dos Clientes</Button>
-                <Button color="primary" href={'/admin/clientes/local'}>Localização dos Clientes</Button>
+                <Button variant="contained" color="secondary" href={'/admin/clientes/tempovisita'}>Tempo de Conexão</Button>
+                <Button variant="contained" color="primary" href={'/admin/clientes/sitesmaisvisitados'}>Sites Acessados</Button>
+                <Button variant="contained" color="secondary" href={'/admin/clientes/perfilusuario'}>Perfil dos Clientes</Button>
+                <Button variant="contained" color="primary" href={'/admin/clientes/local'}>Localização dos Clientes</Button>
                 </ButtonGroup>
                 </Grid>
     </React.Fragment>

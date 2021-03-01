@@ -1,4 +1,4 @@
-import React, {useState,useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
 
@@ -23,10 +23,11 @@ import Button from '@material-ui/core/Button';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 
 import Chip from '@material-ui/core/Chip';
+import LinearProgress from '@material-ui/core/LinearProgress';
 
 const useStyles = makeStyles((theme) => ({
- 
-  
+
+
   root: {
     width: '100%',
     display: 'flex',
@@ -51,7 +52,7 @@ const useStyles = makeStyles((theme) => ({
     overflow: 'auto',
     flexDirection: 'column',
   },
- 
+
 }));
 
 export default function ClientesListagem() {
@@ -67,110 +68,115 @@ export default function ClientesListagem() {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
+  const [loading, setLoading] = useState(true);
   const [clientes, setClientes] = useState([]);
 
-  useEffect(() =>{
-    
-    async function loadClientes(){
-      const response = await api.get("/api/clientes");
+  useEffect(() => {
+
+    async function loadClientes() {
+      const response = await api.get("/api/clientes.diferencadata/");
       setClientes(response.data)
       const pacesso = new Date(clientes.firstSeen).toLocaleString('pt-br');
       const uacesso = new Date(clientes.lastSeen).toLocaleString('pt-br');
-      const tempocalculado =  pacesso -  uacesso
-    } 
+      const tempocalculado = pacesso - uacesso;
+      setLoading(false);
+    }
+
     loadClientes();
-  },[]);
+  }, []);
   const columns = [
-    { id: 'mac', label: 'Mac', minWidth: 170},
+    { id: 'mac', label: 'Mac', minWidth: 170 },
     { id: 'firstSeen', label: 'Primeira Visita', minWidth: 100 },
-    { id: 'lastSeen', label: 'Última Visitasssss', minWidth: 100  },
-    { id: 'tempocalculado', label: 'tempo da visita', minWidth: 100 },
+    { id: 'lastSeen', label: 'Última Visitasssss', minWidth: 100 },
+    { id: 'difdata', label: 'tempo da visita', minWidth: 100 },
   ];
-  
+
   //   function createData(mac, firstSeen, lastSeen) {
   //     const pacesso = new Date(firstSeen).toLocaleString('pt-br');
   //     const uacesso = new Date(lastSeen).toLocaleString('pt-br');
   //     const tempocalculado =  new Date(lastSeen) -  new Date(firstSeen);
   //        return { mac, pacesso, uacesso, tempocalculado};
   //   }
-  
+
   // const rows = [
   //   createData('India', 'IN', 1324171354, 3287263),
   // ];
-  
 
 
-  async function handleDelete(id){
-    if(window.confirm("Deseja realmente excluir este usuário?")){
-      var result = await api.delete('/api/clientes/'+id);
-      if(result.status ===200){
+
+  async function handleDelete(id) {
+    if (window.confirm("Deseja realmente excluir este usuário?")) {
+      var result = await api.delete('/api/clientes/' + id);
+      if (result.status === 200) {
         window.location.href = '/admin/clientes';
-      }else{
+      } else {
         alert('Ocorreu um erro. Por favor, tente novamente!');
       }
     }
   }
-  
+
   return (
     <div className={classes.root}>
-      
-      <MenuAdmin title={'CLIENTES DA REDE'}/>
+
+      <MenuAdmin title={'CLIENTES DA REDE'} />
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
         <Container maxWidth="lg" className={classes.container}>
           <Grid container spacing={3}>
             <Grid item sm={12}>
-            <Paper className={classes.paper}>
+              <Paper className={classes.paper}>
                 <h2>Tempo de Conexão dos Clientes da Rede</h2>
-                <MenuCliente/>
-                <ReactApexChart/>
+                <MenuCliente />
+                {/* GRÁFICO */}
+                <ReactApexChart />
                 <Grid container spacing={3}>
                   <Grid item xs={12} sm={12}>
-                  <TableContainer component={Paper}>
-                  <TableContainer className={classes.container}>
-        <Table stickyHeader aria-label="sticky table">
-          <TableHead>
-            <TableRow>
-              {columns.map((column) => (
-                <TableCell
-                  key={column.id}
-                  align={column.align}
-                  style={{ minWidth: column.minWidth }}
-                >
-                  {column.label}
-                </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {clientes.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-              return (
-                <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
-                  {columns.map((column) => {
-                    const value = row[column.id];
-                    return (
-                      <TableCell key={column.id} align={column.align}>
-                       {/* {console.log(row)} */}
-                        {column.format && typeof value === 'number' ? column.format(value) : value}
-                      </TableCell>
-                    );
-                  })}
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <TablePagination
-        rowsPerPageOptions={[10, 25, 100]}
-        component="div"
-        count={clientes.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onChangePage={handleChangePage}
-        onChangeRowsPerPage={handleChangeRowsPerPage}
-      />
-                        </TableContainer>
+                    <TableContainer component={Paper}>
+                      <TableContainer className={classes.container}>
+                        {loading ? (<LinearProgress style={{ width: '50%', margin: '20px auto' }} />) : (
+                          <Table stickyHeader aria-label="sticky table">
+                            <TableHead>
+                              <TableRow>
+                                {columns.map((column) => (
+                                  <TableCell
+                                    key={column.id}
+                                    align={column.align}
+                                    style={{ minWidth: column.minWidth }}
+                                  >
+                                    {column.label}
+                                  </TableCell>
+                                ))}
+                              </TableRow>
+                            </TableHead>
+                            <TableBody>
+                              {clientes.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+                                return (
+                                  <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
+                                    {columns.map((column) => {
+                                      const value = row[column.id];
+                                      return (
+                                        <TableCell key={column.id} align={column.align}>
+                                          {/* {console.log(row )} */}
+                                          {column.format && typeof value === 'number' ? column.format(value) : value}
+                                        </TableCell>
+                                      );
+                                    })}
+                                  </TableRow>
+                                );
+                              })}
+                            </TableBody>
+                          </Table>)}
+                      </TableContainer>
+                      <TablePagination
+                        rowsPerPageOptions={[10, 25, 100]}
+                        component="div"
+                        count={clientes.length}
+                        rowsPerPage={rowsPerPage}
+                        page={page}
+                        onChangePage={handleChangePage}
+                        onChangeRowsPerPage={handleChangeRowsPerPage}
+                      />
+                    </TableContainer>
                   </Grid>
                 </Grid>
               </Paper>

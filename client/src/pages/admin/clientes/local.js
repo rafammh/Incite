@@ -19,6 +19,7 @@ import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import api from '../../../services/api';
 
+import LinearProgress from '@material-ui/core/LinearProgress';
 
 
 import Chip from '@material-ui/core/Chip';
@@ -62,13 +63,15 @@ export default function ClientesListagem() {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
+  const [ loading, setLoading ] = useState(true);
   const [clientes, setClientes] = useState([]);
 
   useEffect(() =>{
     
     async function loadClientes(){
       const response = await api.get("/api/clientes");
-      setClientes(response.data)
+      setClientes(response.data);
+      setLoading(false);
     }
     loadClientes();
   },[]);
@@ -125,6 +128,7 @@ export default function ClientesListagem() {
                   <Grid item xs={12} sm={12}>
                   <TableContainer component={Paper}>
                   <TableContainer className={classes.container}>
+                  {loading?(<LinearProgress style={{width:'50%', margin:'20px auto'}}  />):(
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
@@ -155,7 +159,7 @@ export default function ClientesListagem() {
               );
             })}
           </TableBody>
-        </Table>
+        </Table>)}
       </TableContainer>
       <TablePagination
         rowsPerPageOptions={[10, 25, 100]}
